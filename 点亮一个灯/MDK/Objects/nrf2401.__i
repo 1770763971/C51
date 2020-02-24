@@ -1,0 +1,1 @@
+"..\..\Libraries\Libraries\nrf2401.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\nrf2401.lst) OBJECT(.\Objects\nrf2401.obj)

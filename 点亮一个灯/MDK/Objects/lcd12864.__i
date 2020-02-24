@@ -1,0 +1,1 @@
+"..\..\Libraries\Libraries\lcd12864.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\lcd12864.lst) OBJECT(.\Objects\lcd12864.obj)
