@@ -5,14 +5,14 @@
 当使用的是4位数据传输的时候定义，
 使用8位取消这个定义
 **********************************/
-//#define LCD1602_4PINS
+#define LCD1602_4PINS
 /**********************************
 PIN口定义
 **********************************/
 #define LCD1602_DATAPINS P0
-sbit LCD1602_E=P2^7;
-sbit LCD1602_RW=P2^5;
-sbit LCD1602_RS=P2^6;
+sbit LCD1602_E= P2^5;
+sbit LCD1602_RW=P2^4;
+sbit LCD1602_RS=P2^3;
 
 /*******************************************************************************
 * 函 数 名         : Lcd1602_Delay1ms
@@ -126,7 +126,7 @@ void LcdWriteData(uchar dat)			//写入数据
 * 输    出       : 无
 *******************************************************************************/		   
 #ifndef		LCD1602_4PINS
-void LcdInit()						  //LCD初始化子程序
+void Lcd1602_Init()						  //LCD初始化子程序
 {
  	LcdWriteCom(0x38);  //开显示
 	LcdWriteCom(0x0c);  //开显示不显示光标
@@ -135,7 +135,7 @@ void LcdInit()						  //LCD初始化子程序
 	LcdWriteCom(0x80);  //设置数据指针起点
 }
 #else
-void LcdInit()						  //LCD初始化子程序
+void Lcd1602_Init()						  //LCD初始化子程序
 {
 	LcdWriteCom(0x32);	 //将8位总线转为4位总线
 	LcdWriteCom(0x28);	 //在四位线下的初始化

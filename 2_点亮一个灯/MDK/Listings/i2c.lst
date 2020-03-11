@@ -1,0 +1,189 @@
+C51 COMPILER V9.57.0.0   I2C                                                               03/06/2020 21:43:36 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE I2C
+OBJECT MODULE PLACED IN .\Objects\i2c.obj
+COMPILER INVOKED BY: C:\Program\Keil_v5\C51\BIN\C51.EXE ..\..\Libraries\Libraries\i2c.c OMF2 OPTIMIZE(8,SPEED) BROWSE IN
+                    -CDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\i2c.lst) OBJECT(.\Objects\
+                    -i2c.obj)
+
+line level    source
+
+   1          #include "common.h"
+   2          #include "i2c.h"
+   3          
+   4          sbit SCL=P2^1;
+   5          sbit SDA=P2^0;
+   6          
+   7          /*******************************************************************************
+   8          * 函数名         : Delay10us()
+   9          * 函数功能                 : 延时10us
+  10          * 输入           : 无
+  11          * 输出           : 无
+  12          *******************************************************************************/
+  13          
+  14          void Delay10us()
+  15          {
+  16   1              unsigned char a,b;
+  17   1              for(b=1;b>0;b--)
+  18   1                      for(a=2;a>0;a--);
+  19   1      
+  20   1      }
+  21          /*******************************************************************************
+  22          * 函数名         : I2cStart()
+  23          * 函数功能                 : 起始信号：在SCL时钟信号在高电平期间SDA信号产生一个下降沿
+  24          * 输入           : 无
+  25          * 输出           : 无
+  26          * 备注           : 起始之后SDA和SCL都为0
+  27          *******************************************************************************/
+  28          
+  29          void I2cStart()
+  30          {
+  31   1              SDA=1;
+  32   1              Delay10us();
+  33   1              SCL=1;
+  34   1              Delay10us();//建立时间是SDA保持时间>4.7us
+  35   1              SDA=0;
+  36   1              Delay10us();//保持时间是>4us
+  37   1              SCL=0;                  
+  38   1              Delay10us();            
+  39   1      }
+  40          /*******************************************************************************
+  41          * 函数名         : I2cStop()
+  42          * 函数功能               : 终止信号：在SCL时钟信号高电平期间SDA信号产生一个上升沿
+  43          * 输入           : 无
+  44          * 输出           : 无
+  45          * 备注           : 结束之后保持SDA和SCL都为1；表示总线空闲
+  46          *******************************************************************************/
+  47          
+  48          void I2cStop()
+  49          {
+  50   1              SDA=0;
+  51   1              Delay10us();
+  52   1              SCL=1;
+  53   1              Delay10us();//建立时间大于4.7us
+C51 COMPILER V9.57.0.0   I2C                                                               03/06/2020 21:43:36 PAGE 2   
+
+  54   1              SDA=1;
+  55   1              Delay10us();            
+  56   1      }
+  57          /*******************************************************************************
+  58          * 函数名         : I2cSendByte(unsigned char dat)
+  59          * 函数功能               : 通过I2C发送一个字节。在SCL时钟信号高电平期间，保持发送信号SDA保持稳定
+  60          * 输入           : num
+  61          * 输出           : 0或1。发送成功返回1，发送失败返回0
+  62          * 备注           : 发送完一个字节SCL=0,SDA=1
+  63          *******************************************************************************/
+  64          
+  65          unsigned char I2cSendByte(unsigned char dat)
+  66          {
+  67   1              unsigned char a=0,b=0;//最大255，一个机器周期为1us，最大延时255us。             
+  68   1              for(a=0;a<8;a++)//要发送8位，从最高位开始
+  69   1              {
+  70   2                      SDA=dat>>7;      //起始信号之后SCL=0，所以可以直接改变SDA信号
+  71   2                      dat=dat<<1;
+  72   2                      Delay10us();
+  73   2                      SCL=1;
+  74   2                      Delay10us();//建立时间>4.7us
+  75   2                      SCL=0;
+  76   2                      Delay10us();//时间大于4us               
+  77   2              }
+  78   1              SDA=1;
+  79   1              Delay10us();
+  80   1              SCL=1;
+  81   1              while(SDA)//等待应答，也就是等待从设备把SDA拉低
+  82   1              {
+  83   2                      b++;
+  84   2                      if(b>200)        //如果超过2000us没有应答发送失败，或者为非应答，表示接收结束
+  85   2                      {
+  86   3                              SCL=0;
+  87   3                              Delay10us();
+  88   3                              return 0;
+  89   3                      }
+  90   2              }
+  91   1              SCL=0;
+  92   1              Delay10us();
+  93   1              return 1;               
+  94   1      }
+  95          /*******************************************************************************
+  96          * 函数名         : I2cReadByte()
+  97          * 函数功能                 : 使用I2c读取一个字节
+  98          * 输入           : 无
+  99          * 输出           : dat
+ 100          * 备注           : 接收完一个字节SCL=0,SDA=1.
+ 101          *******************************************************************************/
+ 102          
+ 103          unsigned char I2cReadByte()
+ 104          {
+ 105   1              unsigned char a=0,dat=0;
+ 106   1              SDA=1;                  //起始和发送一个字节之后SCL都是0
+ 107   1              Delay10us();
+ 108   1              for(a=0;a<8;a++)//接收8个字节
+ 109   1              {
+ 110   2                      SCL=1;
+ 111   2                      Delay10us();
+ 112   2                      dat<<=1;
+ 113   2                      dat|=SDA;
+ 114   2                      Delay10us();
+ 115   2                      SCL=0;
+C51 COMPILER V9.57.0.0   I2C                                                               03/06/2020 21:43:36 PAGE 3   
+
+ 116   2                      Delay10us();
+ 117   2              }
+ 118   1              return dat;             
+ 119   1      }
+ 120          
+ 121          
+ 122          /*******************************************************************************
+ 123          * 函数名         : void At24c02Write(unsigned char addr,unsigned char dat)
+ 124          * 函数功能                 : 往24c02的一个地址写入一个数据
+ 125          * 输入           : 无
+ 126          * 输出           : 无
+ 127          *******************************************************************************/
+ 128          
+ 129          void At24c02Write(unsigned char addr,unsigned char dat)
+ 130          {
+ 131   1              I2cStart();
+ 132   1              I2cSendByte(0xa0);//发送写器件地址
+ 133   1              I2cSendByte(addr);//发送要写入内存地址
+ 134   1              I2cSendByte(dat);       //发送数据
+ 135   1              I2cStop();
+ 136   1      }
+ 137          /*******************************************************************************
+ 138          * 函数名         : unsigned char At24c02Read(unsigned char addr)
+ 139          * 函数功能                 : 读取24c02的一个地址的一个数据
+ 140          * 输入           : 无
+ 141          * 输出           : 无
+ 142          *******************************************************************************/
+ 143          
+ 144          unsigned char At24c02Read(unsigned char addr)
+ 145          {
+ 146   1              unsigned char num;
+ 147   1              I2cStart();
+ 148   1              I2cSendByte(0xa0); //发送写器件地址
+ 149   1              I2cSendByte(addr); //发送要读取的地址
+ 150   1              I2cStart();
+ 151   1              I2cSendByte(0xa1); //发送读器件地址
+ 152   1              num=I2cReadByte(); //读取数据
+ 153   1              I2cStop();
+ 154   1              return num;     
+ 155   1      }
+ 156          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    201    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

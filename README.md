@@ -3,7 +3,7 @@
 
    Libraries:	 libraries function in it  
 0.Project :	 project file and user code in it  
-1_点亮一个灯	:
+1_点亮一个灯	:trun on a light  
 2_lcd1602 :		project of lcd1602
 **********************************************************************  
 ## git cmd 

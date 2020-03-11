@@ -1,0 +1,111 @@
+C51 COMPILER V9.57.0.0   KEY                                                               02/27/2020 23:59:15 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE KEY
+OBJECT MODULE PLACED IN .\Objects\key.obj
+COMPILER INVOKED BY: C:\Program\Keil_v5\C51\BIN\C51.EXE ..\..\Libraries\Common\key.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDI
+                    -R(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\key.lst) OBJECT(.\Objects\key
+                    -.obj)
+
+line level    source
+
+   1          /**************************************************************************************
+   2          *                             矩阵按键实验                                                                                                *
+   3          实现现象：下载程序后数码管显示0，按下矩阵按键上的按键显示对应的数字
+   4                                  S1-S4：0-3
+   5                                  S5-S8：4-7
+   6                                  S9-S12：8-B
+   7                                  S13-S16：C-F。
+   8          注意事项：如果不想让点阵模块显示，可以将74HC595模块上的JP595短接片拔掉。                                                                                                                                                                  
+   9          ***************************************************************************************/
+  10          #include "common.h"
+  11          #include "variable.h"
+  12          #include "delay.h"
+  13          #include "key.h"
+  14          
+  15          extern u8 KeyValue;
+  16          
+  17          extern u8 code smgduan[17];
+  18          
+  19          /*******************************************************************************
+  20          * 函 数 名         : KeyDown
+  21          * 函数功能                 : 检测有按键按下并读取键值
+  22          * 输    入         : 无
+  23          * 输    出         : 无
+  24          可以用定时器中断检测按键，得到按键值
+  25          *******************************************************************************/
+  26          void KeyDown(void)
+  27          {
+  28   1              char a=0;
+  29   1              GPIO_KEY=0x0f;
+  30   1              if(GPIO_KEY!=0x0f)//读取按键是否按下
+  31   1              {
+  32   2                      delay(1000);//延时10ms进行消抖
+  33   2                      if(GPIO_KEY!=0x0f)//再次检测键盘是否按下
+  34   2                      {       
+  35   3                              //测试列
+  36   3                              GPIO_KEY=0X0F;
+  37   3                              switch(GPIO_KEY)
+  38   3                              {
+  39   4                                      case(0X07):     KeyValue=0;break;
+  40   4                                      case(0X0b):     KeyValue=1;break;
+  41   4                                      case(0X0d): KeyValue=2;break;
+  42   4                                      case(0X0e):     KeyValue=3;break;
+  43   4                              }
+  44   3                              //测试行
+  45   3                              GPIO_KEY=0XF0;
+  46   3                              switch(GPIO_KEY)
+  47   3                              {
+  48   4                                      case(0X70):     KeyValue=KeyValue;break;
+  49   4                                      case(0Xb0):     KeyValue=KeyValue+4;break;
+  50   4                                      case(0Xd0): KeyValue=KeyValue+8;break;
+  51   4                                      case(0Xe0):     KeyValue=KeyValue+12;break;
+  52   4                              }
+  53   3                              while((a<50)&&(GPIO_KEY!=0xf0))  //检测按键松手检测
+C51 COMPILER V9.57.0.0   KEY                                                               02/27/2020 23:59:15 PAGE 2   
+
+  54   3                              {
+  55   4                                      delay(1000);
+  56   4                                      a++;
+  57   4                              }
+  58   3                      }
+  59   2              }
+  60   1      }
+  61          
+  62          
+  63          /*******************************************************************************
+  64          * 函 数 名       : main
+  65          * 函数功能               : 主函数
+  66          * 输    入       : 无
+  67          * 输    出       : 无
+  68          * 说明 复制按键实验，直接调用该函数能用数码管显示键值
+  69          *******************************************************************************/
+  70          void ke()
+  71          {       
+  72   1              LSA=0; //给一个数码管提供位选
+  73   1              LSB=0;
+  74   1              LSC=0;
+  75   1              while(1)
+  76   1              {       
+  77   2                      KeyDown();                 //按键判断函数
+  78   2                                      GPIO_DIG=smgduan[KeyValue];       //
+  79   2              }               
+  80   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    146    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

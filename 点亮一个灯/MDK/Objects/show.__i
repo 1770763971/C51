@@ -1,1 +1,0 @@
-"..\..\Libraries\Common\show.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\show.lst) OBJECT(.\Objects\show.obj)

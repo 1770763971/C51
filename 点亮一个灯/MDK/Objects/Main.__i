@@ -1,1 +1,0 @@
-"..\USER\Main.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Main.obj)

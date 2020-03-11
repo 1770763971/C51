@@ -8,14 +8,14 @@
 
 #include "common.h"
 
-#include "lcd12864.h"
+#include "lcd1602.h"
 #include "isr.h"
 #include "Sys_Init.h"
 
 void Sys_init_all()
 {
-//	lcd_init();
-	UsartInit();
+	Lcd1602_Init();
+//	UsartInit();
 //	Int0Init();
 //	Timer0Init();
 //	Int1Init();
