@@ -1,0 +1,1 @@
+"..\..\Libraries\Libraries\Lcd12864NoFont.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\Lcd12864NoFont.lst) OBJECT(.\Objects\Lcd12864NoFont.obj)
