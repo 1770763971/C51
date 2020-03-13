@@ -1,0 +1,1 @@
+"..\USER\isr.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\isr.lst) OBJECT(.\Objects\isr.obj)

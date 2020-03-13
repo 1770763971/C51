@@ -18,11 +18,11 @@ sbit CS   = P3^5;	  //Ƭѡ
 
 sbit IRIN=P3^2;
 
-u8 IrValue[6];
+
 extern u8 Time;
  u8 DisplayData[8];
 extern u8 code smgduan[];
-
+ u8 IrValue[6];
 
 
 

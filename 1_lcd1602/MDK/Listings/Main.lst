@@ -1,4 +1,4 @@
-C51 COMPILER V9.57.0.0   MAIN                                                              02/27/2020 23:59:17 PAGE 1   
+C51 COMPILER V9.57.0.0   MAIN                                                              03/12/2020 20:51:01 PAGE 1   
 
 
 C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
@@ -54,43 +54,52 @@ line level    source
   44          uchar code table2[] = "QQ:598852247";
   45          
   46          
-  47          
-  48          void main(void)
-  49          {
-  50   1          u8 i;
-  51   1              Sys_init_all(); //All initialization function
-  52   1      //      Int0Init();  // Set external intertupt 0
-  53   1      
-  54   1          while (1)
-C51 COMPILER V9.57.0.0   MAIN                                                              02/27/2020 23:59:17 PAGE 2   
+  47          void Sys_init_all()
+  48          {
+  49   1              Lcd1602_Init();
+  50   1      //      UsartInit();
+  51   1      //      Int0Init();
+  52   1      //      Timer0Init();
+  53   1      //      Int1Init();
+  54   1      //      Timer1Init();
+C51 COMPILER V9.57.0.0   MAIN                                                              03/12/2020 20:51:01 PAGE 2   
 
-  55   1          {
-  56   2              LcdWriteCom(0x40);    //开始写入你要显示的自定义字符、汉字代码
-  57   2              for (i = 0;i < 64;i++)
-  58   2              {
-  59   3                  LcdWriteData(table[i]);
-  60   3                  delay(5);
-  61   3              }
-  62   2              LcdWriteCom(0x80);    //从第一行第一列开始显示
-  63   2              for (i = 0;i < 8;i++)     //显示自定义字符
-  64   2              {
-  65   3                  LcdWriteData(table1[i]);
-  66   3                  delay(5);
-  67   3              }
-  68   2              LcdWriteCom(0xc0);   //显示QQ：598852247
-  69   2              for (i = 0;i < 12;i++)
-  70   2              {
-  71   3                  LcdWriteData(table2[i]);
-  72   3                  delay(5);
-  73   3              }
-  74   2          }
-  75   1      
-  76   1      }
-  77          
+  55   1      }
+  56          
+  57          void main(void)
+  58          {
+  59   1          u8 i;
+  60   1              Sys_init_all(); //All initialization function
+  61   1      //      Int0Init();  // Set external intertupt 0
+  62   1      
+  63   1          while (1)
+  64   1          {
+  65   2              LcdWriteCom(0x40);    //开始写入你要显示的自定义字符、汉字代码
+  66   2              for (i = 0;i < 64;i++)
+  67   2              {
+  68   3                  LcdWriteData(table[i]);
+  69   3                  delay(5);
+  70   3              }
+  71   2              LcdWriteCom(0x80);    //从第一行第一列开始显示
+  72   2              for (i = 0;i < 8;i++)     //显示自定义字符
+  73   2              {
+  74   3                  LcdWriteData(table1[i]);
+  75   3                  delay(5);
+  76   3              }
+  77   2              LcdWriteCom(0xc0);   //显示QQ：598852247
+  78   2              for (i = 0;i < 12;i++)
+  79   2              {
+  80   3                  LcdWriteData(table2[i]);
+  81   3                  delay(5);
+  82   3              }
+  83   2          }
+  84   1      
+  85   1      }
+  86          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    107    ----
+   CODE SIZE        =    110    ----
    CONSTANT SIZE    =     85    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

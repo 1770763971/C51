@@ -1,0 +1,315 @@
+C51 COMPILER V9.57.0.0   LCD12864NOFONT                                                    02/25/2020 21:15:14 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE LCD12864NOFONT
+OBJECT MODULE PLACED IN .\Objects\Lcd12864NoFont.obj
+COMPILER INVOKED BY: C:\Program\Keil_v5\C51\BIN\C51.EXE ..\..\Libraries\Libraries\Lcd12864NoFont.c OMF2 OPTIMIZE(8,SPEED
+                    -) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\Lcd12864NoFont.
+                    -lst) OBJECT(.\Objects\Lcd12864NoFont.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include "delay.h"
+*** ERROR C141 IN LINE 31 OF ..\..\Libraries\Common\delay.h: syntax error near 'n', expected ')'
+*** ERROR C141 IN LINE 32 OF ..\..\Libraries\Common\delay.h: syntax error near 'm', expected ')'
+*** ERROR C141 IN LINE 33 OF ..\..\Libraries\Common\delay.h: syntax error near 'i', expected ')'
+   3          #include "Lcd12864NoFont.h"
+   4          #include "PictureForLcd12864NoFont.h"
+   5           
+   6          
+   7          
+   8          void Write(uchar dat,bit type)
+   9          {
+  10   1         lcmen=0;
+  11   1         lcmrw=0;
+  12   1         lcmrs=type;
+  13   1         P1=dat;
+  14   1         Delay(5);
+  15   1         lcmen=1;
+  16   1         lcmen=1;
+  17   1         Delay(1);
+  18   1         lcmen=0;
+  19   1      }
+  20          void Cls()
+  21          {
+  22   1        uchar i,j;
+  23   1        All();
+  24   1        for(i=0;i<8;i++)
+  25   1        {
+  26   2              Write(0xB8|i,CMD);
+  27   2              Write(0x40,CMD);
+  28   2              for(j=0;j<64;j++)
+  29   2              Write(0x00,DATA);
+  30   2         }
+  31   1      }
+  32          /*全屏显示图片*/
+  33          void LCDDisplay(uchar line,uchar row, uchar table[7][128])
+  34          {
+  35   1         uchar i,j;
+  36   1       for(i=0;i<8;i++)
+  37   1       { 
+  38   2            if(row<0x80)
+  39   2            { 
+  40   3              Left();
+  41   3              }
+  42   2         Write(line+i,CMD);
+  43   2         Write(row,CMD);
+  44   2         for(j=0;j<64;j++)
+  45   2          {    
+  46   3           Write(table[i][j],DATA);
+  47   3           row+=1;
+  48   3           }
+  49   2         if(row>=0x80)
+  50   2          {
+C51 COMPILER V9.57.0.0   LCD12864NOFONT                                                    02/25/2020 21:15:14 PAGE 2   
+
+  51   3            Right();
+  52   3            row=row-64;
+  53   3            }
+  54   2          Write(line+i,CMD);
+  55   2          Write(row,CMD);
+  56   2          for(j=64;j<128;j++)
+  57   2           {
+  58   3             Write(table[i][j],DATA);
+  59   3             row+=1;
+  60   3             }
+  61   2            if(row>=0x80)
+  62   2              {
+  63   3               row=row-0x40;
+  64   3               }
+  65   2          }
+  66   1      }                 
+  67          void Init()
+  68          {
+  69   1        Cls();
+  70   1        Write(0x3F,CMD);
+  71   1        Write(0xC0,CMD);
+  72   1        Write(0xB8,CMD);
+  73   1        Write(0x40,CMD);
+  74   1      }
+  75          
+  76          
+  77          /****************************************************************************
+  78          函数功能:LCD延时程序
+  79          入口参数:t
+  80          出口参数:
+  81          ****************************************************************************/
+  82          void LCDdelay(unsigned int t)
+  83          {
+  84   1              unsigned int i,j;
+  85   1              for(i=0;i<t;i++);
+  86   1              for(j=0;j<10;j++);
+  87   1      }
+  88          /****************************************************************************
+  89          状态检查，LCD是否忙
+  90          
+  91          *****************************************************************************/
+  92          void CheckState()               
+  93          {
+  94   1         unsigned char dat,DATA_1;//状态信息（判断是否忙）
+  95   1         LCDDi=0; // 数据\指令选择，D/I（RS）="L" ，表示 DB7∽DB0 为显示指令数据 
+  96   1         LCDRW=1; //R/W="H" ，E="H"数据被读到DB7∽DB0 
+  97   1         do
+  98   1         {
+  99   2            DATA_1=0x00;
+ 100   2            LCDEnable=1;      //EN下降源
+ 101   2                LCDdelay(2);//延时
+ 102   2                dat=DATA_1;
+ 103   2            LCDEnable=0;
+ 104   2            dat=0x80 & dat; //仅当第7位为0时才可操作(判别busy信号)
+ 105   2          }
+ 106   1          while(!(dat==0x00));
+ 107   1      }
+ 108          /*****************************************************************************
+ 109          函数功能:写命令到LCD程序，RS(DI)=L,RW=L,EN=H，即来一个脉冲写一次
+ 110          入口参数:cmdcode
+ 111          出口参数:
+ 112          *****************************************************************************/
+C51 COMPILER V9.57.0.0   LCD12864NOFONT                                                    02/25/2020 21:15:14 PAGE 3   
+
+ 113          void write_com(unsigned char cmdcode)
+ 114          {
+ 115   1          CheckState();//检测LCD是否忙
+ 116   1              LCDDi=0;
+ 117   1              LCDRW=0;
+ 118   1              P1=cmdcode;             
+ 119   1              LCDdelay(2);
+ 120   1              LCDEnable=1;
+ 121   1              LCDdelay(2);
+ 122   1              LCDEnable=0;
+ 123   1      }
+ 124          /*****************************************************************************
+ 125          函数功能:LCD初始化程序
+ 126          入口参数:
+ 127          出口参数:
+ 128          *****************************************************************************/
+ 129          void init_lcd()
+ 130          {
+ 131   1              LCDdelay(100);  
+ 132   1              LCDMcs=1;//刚开始关闭两屏
+ 133   1              LCDScs=1;
+ 134   1              LCDdelay(100);
+ 135   1              write_com(LCDLCDDisp_Off);       //写初始化命令
+ 136   1              write_com(Page_Add+0);
+ 137   1              write_com(Start_Line+0);
+ 138   1              write_com(LCDCol_Add+0);
+ 139   1              write_com(LCDLCDDisp_On);
+ 140   1      }
+ 141          /*****************************************************************************
+ 142          函数功能:写数据到LCD程序，RS(DI)=H,RW=L,EN=H，即来一个脉冲写一次
+ 143          入口参数:LCDDispdata
+ 144          出口参数:
+ 145          *****************************************************************************/
+ 146          void write_data(unsigned char LCDDispdata)
+ 147          {
+ 148   1          CheckState();//检测LCD是否忙
+ 149   1              LCDDi=1;
+ 150   1              LCDRW=0;
+ 151   1              P1=LCDDispdata;
+ 152   1              LCDdelay(2);
+ 153   1              LCDEnable=1;
+ 154   1              LCDdelay(2);
+ 155   1              LCDEnable=0;
+ 156   1      }
+ 157          /*****************************************************************************
+ 158          函数功能:清除LCD内存程序
+ 159          入口参数:pag,col,hzk
+ 160          出口参数:
+ 161          *****************************************************************************/
+ 162          void Clr_Scr()
+ 163          {
+ 164   1              unsigned char j,k;
+ 165   1              LCDMcs=0; //左、右屏均开显示
+ 166   1              LCDScs=0;
+ 167   1              write_com(Page_Add+0);
+ 168   1              write_com(LCDCol_Add+0);
+ 169   1              for(k=0;k<8;k++)//控制页数0-7，共8页
+ 170   1              {
+ 171   2                      write_com(Page_Add+k); //每页每页进行写
+ 172   2                      for(j=0;j<64;j++)  //每页最多可写32个中文文字或64个ASCII字符
+ 173   2                      {
+ 174   3                      write_com(LCDCol_Add+j);
+C51 COMPILER V9.57.0.0   LCD12864NOFONT                                                    02/25/2020 21:15:14 PAGE 4   
+
+ 175   3                              write_data(0x00);//控制列数0-63，共64列，写点内容，列地址自动加1
+ 176   3                      }
+ 177   2              }
+ 178   1      }
+ 179          /*****************************************************************************
+ 180          函数功能:左屏位置显示
+ 181          入口参数:page,column,hzk
+ 182          出口参数:
+ 183          *****************************************************************************/
+ 184          void Bmp_Left_Disp(unsigned char page,unsigned char column, unsigned char code *Bmp)
+ 185          {
+ 186   1              unsigned char j=0,i=0;
+ 187   1              for(j=0;j<8;j++)
+ 188   1              {
+ 189   2                      write_com(Page_Add+page+j);
+ 190   2                      write_com(LCDCol_Add+column);
+ 191   2                      for(i=0;i<64;i++) 
+ 192   2                              write_data(Bmp[128*j+i]);
+ 193   2              }
+ 194   1      }
+ 195          /*****************************************************************************
+ 196          函数功能:右屏位置显示
+ 197          入口参数:page,column,hzk
+ 198          出口参数:
+ 199          *****************************************************************************/
+ 200          void Bmp_Right_Disp(unsigned char page,unsigned char column, unsigned char code *Bmp)
+ 201          {
+ 202   1              unsigned char j=0,i=0;
+ 203   1              for(j=0;j<8;j++)
+ 204   1              {
+ 205   2                      write_com(Page_Add+page+j);
+ 206   2                      write_com(LCDCol_Add+column);
+ 207   2                      for(i=64;i<128;i++) 
+ 208   2                              write_data(Bmp[128*j+i]);
+ 209   2              }
+ 210   1      }
+ 211          
+ 212          /*****************************************************************************
+ 213          函数功能:指定位置显示汉字16*16程序
+ 214          入口参数:page,column,hzk
+ 215          出口参数:
+ 216          *****************************************************************************/
+ 217          void hz_LCDDisp16(unsigned char page,unsigned char column, unsigned char code *hzk)
+ 218          {
+ 219   1              unsigned char j=0,i=0;
+ 220   1              for(j=0;j<2;j++)
+ 221   1              {
+ 222   2                      write_com(Page_Add+page+j);
+ 223   2                      write_com(LCDCol_Add+column);
+ 224   2                      for(i=0;i<16;i++) 
+ 225   2                              write_data(hzk[16*j+i]);
+ 226   2              }
+ 227   1      }
+ 228          
+ 229          /*****************************************************************************
+ 230          函数功能:一行一行显示
+ 231          入口参数:page,column,hzk
+ 232          出口参数:
+ 233          *****************************************************************************/
+ 234          void Disp(uchar page,uchar column, uchar code *word)
+ 235          {
+ 236   1      uchar i;
+C51 COMPILER V9.57.0.0   LCD12864NOFONT                                                    02/25/2020 21:15:14 PAGE 5   
+
+ 237   1      //左屏
+ 238   1      LCDMcs=0; 
+ 239   1      LCDScs=1;
+ 240   1      //上半字
+ 241   1      write_com(0xb8|page);
+ 242   1      write_com(0x40|column);
+ 243   1      for(i=0;i<16;i++)
+ 244   1      write_data(word[i]);
+ 245   1      for(i=32;i<48;i++)
+ 246   1      write_data(word[i]);
+ 247   1      for(i=64;i<80;i++)
+ 248   1      write_data(word[i]);
+ 249   1      for(i=96;i<112;i++)
+ 250   1      write_data(word[i]);
+ 251   1      //下半字
+ 252   1      write_com(0xb8|page+1);
+ 253   1      write_com(0x40|column);
+ 254   1      for(i=16;i<32;i++)
+ 255   1      write_data(word[i]);
+ 256   1      for(i=48;i<64;i++)
+ 257   1      write_data(word[i]);
+ 258   1      for(i=80;i<96;i++)
+ 259   1      write_data(word[i]);
+ 260   1      for(i=112;i<128;i++)
+ 261   1      write_data(word[i]);
+ 262   1      //右屏
+ 263   1      LCDMcs=1; 
+ 264   1      LCDScs=0;
+ 265   1      //上半字
+ 266   1      write_com(0xb8|page);
+ 267   1      write_com(0x40);
+ 268   1      for(i=128;i<144;i++)
+ 269   1      write_data(word[i]);
+ 270   1      for(i=160;i<176;i++)
+ 271   1      write_data(word[i]);
+ 272   1      for(i=192;i<208;i++)
+ 273   1      write_data(word[i]);
+ 274   1      for(i=224;i<240;i++)
+ 275   1      write_data(word[i]);
+ 276   1      //下半字
+ 277   1      write_com(0xb8|page+1);
+ 278   1      write_com(0x40);
+ 279   1      for(i=144;i<160;i++)
+ 280   1      write_data(word[i]);
+ 281   1      for(i=176;i<192;i++)
+ 282   1      write_data(word[i]);
+ 283   1      for(i=208;i<224;i++)
+ 284   1      write_data(word[i]);
+ 285   1      for(i=240;i<250;i++)
+ 286   1      write_data(word[i]);
+ 287   1      }
+ 288          
+ 289          
+ 290          
+ 291          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  3 ERROR(S)

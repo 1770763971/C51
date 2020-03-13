@@ -1,0 +1,138 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              03/13/2020 13:30:22 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+COMPILER INVOKED BY: C:\Program\Keil_v5\C51\BIN\C51.EXE ..\USER\Main.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\Librar
+                    -ies\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Objects\Main.obj)
+
+line level    source
+
+   1          /*********************************************************************************
+   2           * @File:     Main.c
+   3           * @Author:   Mo
+   4           * @Date         : 2020.02.21
+   5           * @Describe: Main function in it 
+   6           * 
+   7          **********************************************************************************/     
+   8          
+   9          #include "Main.h"
+  10          
+  11          sbit IRIN=P3^2;
+  12          
+  13           u8 IrValue[6];
+  14          unsigned char code CDIS1[13]={" Red Control "};
+  15          unsigned char code CDIS2[13]={" IR-CODE:--H "};
+  16          //unsigned char IrValue[6];
+  17          unsigned char Time;
+  18          
+  19          extern u8 KeyValue;     //Using to do save the key value. 
+  20          
+  21          extern uchar code IC_DAT[];
+  22          extern uchar code IC_DAT2[];
+  23          extern unsigned char code zk[];
+  24          extern unsigned char code pic2[];
+  25          extern unsigned char code BMP1[];
+  26          extern unsigned char code BMP[];
+  27          extern unsigned char code zk[];
+  28          
+  29          sbit k1=P3^1;    //定义P31口是k1
+  30          sbit led=P2^0;   //定义P20口是led
+  31          
+  32          /*******************************************************************************
+  33          *@brief         Main function
+  34          *@param         null
+  35          *@return        0
+  36          *@since         v1.0
+  37          *@SampleUsage:  mian
+  38          *******************************************************************************/
+  39          u8 Disp[]=" Pechin Science ";
+  40          
+  41          uchar code table[] = {
+  42          0x00,0x00,0x00,0x1F,0x00,0x00,0x00,0x00,//一
+  43          0x00,0x00,0x0E,0x00,0x1F,0x00,0x00,0x00,//二
+  44          0x00,0x1F,0x00,0x0E,0x00,0x1F,0x00,0x00,//三
+  45          0x02,0x04,0x0F,0x12,0x0F,0x0A,0x1F,0x02,//年
+  46          0x0F,0x09,0x0F,0x09,0x0F,0x09,0x09,0x11,//月
+  47          0x1F,0x11,0x11,0x1F,0x11,0x11,0x1F,0x00,//日
+  48          0x00,0x00,0x00,0x0A,0x15,0x0A,0x04,0x00,//心型
+  49          0x00,0x04,0x15,0x0E,0x1F,0x0E,0x11,0x00//坦克
+  50          };
+  51          uchar code table1[] = { 0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07 };  //自定义字符数据地址
+  52          uchar code table2[] = "QQ:598852247";
+  53          
+  54          
+C51 COMPILER V9.57.0.0   MAIN                                                              03/13/2020 13:30:22 PAGE 2   
+
+  55          void Sys_init_all()
+  56          {
+  57   1              Lcd1602_Init();
+*** WARNING C206 IN LINE 57 OF ..\USER\Main.c: 'Lcd1602_Init': missing function-prototype
+  58   1      //      UsartInit();
+  59   1      //      Int0Init();
+  60   1      //      Timer0Init();
+  61   1      //      Int1Init();
+  62   1      //      Timer1Init();
+  63   1      }
+  64          
+  65          void main()
+  66          {
+  67   1              unsigned char i;
+  68   1              IrInit();       
+  69   1              Lcd1602_Init();
+  70   1              LcdWriteCom(0x80);
+  71   1              for(i=0;i<13;i++)
+  72   1              {
+  73   2                      LcdWriteData(CDIS1[i]); 
+  74   2              }
+  75   1              LcdWriteCom(0x80+0x40);
+  76   1              for(i=0;i<13;i++)
+  77   1              {
+  78   2                      LcdWriteData(CDIS2[i]); 
+  79   2              }
+  80   1              while(1)
+  81   1              {
+  82   2                      IrValue[4]=IrValue[2]>>4;                       //高位
+  83   2                      IrValue[5]=IrValue[2]&0x0f;             //低位  
+  84   2                      if(IrValue[4]>9)
+  85   2                      {
+  86   3                              LcdWriteCom(0xc0+0x09);                 //设置显示位置
+  87   3                              LcdWriteData(0x37+IrValue[4]);  //将数值转换为该显示的ASCII码
+  88   3                      }
+  89   2                      else
+  90   2                      {
+  91   3                              LcdWriteCom(0xc0+0x09);
+  92   3                              LcdWriteData(IrValue[4]+0x30);  //将数值转换为该显示的ASCII码
+  93   3                      }       
+  94   2                      if(IrValue[5]>9)
+  95   2                      {
+  96   3                              LcdWriteCom(0xc0+0x0a);
+  97   3                              LcdWriteData(IrValue[5]+0x37);          //将数值转换为该显示的ASCII码
+  98   3                      }
+  99   2                      else
+ 100   2                      {
+ 101   3                              LcdWriteCom(0xc0+0x0a);
+ 102   3                              LcdWriteData(IrValue[5]+0x30);          //将数值转换为该显示的ASCII码
+ 103   3                      }       
+ 104   2              }
+ 105   1      }       
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    142    ----
+   CONSTANT SIZE    =    111    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+C51 COMPILER V9.57.0.0   MAIN                                                              03/13/2020 13:30:22 PAGE 3   
+
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

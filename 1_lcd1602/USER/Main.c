@@ -44,6 +44,15 @@ uchar code table1[] = { 0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07 };  //×Ô¶¨Òå×Ö·û
 uchar code table2[] = "QQ:598852247";
 
 
+void Sys_init_all()
+{
+	Lcd1602_Init();
+//	UsartInit();
+//	Int0Init();
+//	Timer0Init();
+//	Int1Init();
+//	Timer1Init();
+}
 
 void main(void)
 {

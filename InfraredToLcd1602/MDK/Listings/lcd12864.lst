@@ -1,0 +1,270 @@
+C51 COMPILER V9.57.0.0   LCD12864                                                          03/13/2020 13:29:27 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE LCD12864
+OBJECT MODULE PLACED IN .\Objects\lcd12864.obj
+COMPILER INVOKED BY: C:\Program\Keil_v5\C51\BIN\C51.EXE ..\..\Libraries\Libraries\lcd12864.c OMF2 OPTIMIZE(8,SPEED) BROW
+                    -SE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\lcd12864.lst) OBJECT(
+                    -.\Objects\lcd12864.obj)
+
+line level    source
+
+   1          #include "common.h"
+   2          #include "variable.h"
+   3          #include "delay.h"
+   4          #include "show.h"
+   5          #include "lcd12864.h"
+   6          
+   7          extern uchar code IC_DAT[];
+   8          extern uchar code IC_DAT2[];
+   9          extern unsigned char code zk[];
+  10          extern unsigned char code pic2[];
+  11          extern unsigned char code BMP1[];
+  12          extern unsigned char code BMP[];
+  13          extern unsigned char code zk[];
+  14          
+  15          void chk_busy() 
+  16          {  RS=0; 
+  17   1         RW=1; 
+  18   1         E=1; 
+  19   1         Lcd_Bus=0xff; 
+  20   1         while((Lcd_Bus&0x80)==0x80); 
+  21   1         E=0; 
+  22   1      } 
+  23          
+  24          /*------------------Ğ´ÃüÁîµ½LCD------------------------------*/ 
+  25          void write_com(unsigned char cmdcode) 
+  26          { 
+  27   1      chk_busy(); 
+  28   1      RS=0; 
+  29   1      RW=0; 
+  30   1      E=1; 
+  31   1      Lcd_Bus=cmdcode; 
+  32   1      delay(5);////////////////////ÔÚÊı¾İĞ´ÈëµÄÊ±ºò¼ÓÈëÊÊµ±µÄÑÓÊ± 
+  33   1      E=0; 
+  34   1      delay(5); 
+  35   1      } 
+  36          /*----------Ğ´Êı¾İµ½LCD--------*/ 
+  37          void write_data(unsigned char Dispdata) 
+  38          { 
+  39   1      chk_busy(); 
+  40   1      RS=1; 
+  41   1      RW=0; 
+  42   1      E=1; 
+  43   1      Lcd_Bus=Dispdata; 
+  44   1      delay(5);///////////////////ÔÚÊı¾İĞ´ÈëµÄÊ±ºò¼ÓÈëÊÊµ±µÄÑÓÊ± 
+  45   1      E=0; 
+  46   1      delay(5); 
+  47   1      } 
+  48          /*----------³õÊ¼»¯LCDÆÁ-------------------*/ 
+  49          void lcd_init(void)
+  50          {  delay(2000); 
+  51   1         write_com(0x30); 
+  52   1         delay(10);             //Ñ¡Ôñ»ù±¾Ö¸Áî¼¯ 
+  53   1         write_com(0x30);       //Ñ¡Ôñ8bitÊı¾İÁ÷ 
+C51 COMPILER V9.57.0.0   LCD12864                                                          03/13/2020 13:29:27 PAGE 2   
+
+  54   1         delay(5); 
+  55   1         write_com(0x0c);       //¿ªÏÔÊ¾(ÎŞÓÎ±ê¡¢²»·´°×) 
+  56   1         delay(10); 
+  57   1         write_com(0x01);       //Çå³ıÏÔÊ¾£¬²¢ÇÒÉè¶¨µØÖ·Ö¸ÕëÎª00H 
+  58   1         delay(500); 
+  59   1         write_com(0x06);       //Ö¸¶¨ÔÚ×ÊÁÏµÄ¶ÁÈ¡¼°Ğ´ÈëÊ±£¬Éè¶¨ÓÎ±êµÄÒÆ¶¯·½Ïò¼°Ö¸¶¨ÏÔÊ¾µÄÒÆÎ» 
+  60   1         delay(0); 
+  61   1      } 
+  62          /*-------×Ô¶¨ÒåÒ»¸ö×Ö·û´úÂë(Ò»¸öĞÇĞÇºÍÔÂÁ---------*/ 
+  63          void CGRAM() 
+  64          { int i; 
+  65   1           write_com(0x30);   
+  66   1           write_com(0x40); 
+  67   1           for(i=0;i<16;i++) 
+  68   1           {write_data(zk[i*2]); 
+  69   2            write_data(zk[i*2+1]); 
+  70   2            } 
+  71   1      }       
+  72          /*------------------ÏÔÊ¾×Ö·û´®--------------*/ 
+  73          void hzkdis(unsigned char code *s) 
+  74          {  while(*s>0) 
+  75   1         {  write_data(*s); 
+  76   2            s++; 
+  77   2            delay(50); 
+  78   2         } 
+  79   1      } 
+  80          /*------------------Ê×ÆÁÏÔÊ¾-----------------*/ 
+  81          void ceshi() 
+  82          {write_com(0x01);//Çå³ıÏÔÊ¾£¬²¢ÇÒÉè¶¨µØÖ·Ö¸ÕëÎª00H 
+  83   1      delay(5); 
+  84   1      
+  85   1      write_com(0x80);//µÚÒ»ĞĞ£¨Èç¹ûÊÇµØÖ·ÊÇ£º80H£¬¼´LCDµÄµÚÒ»ĞĞµÄµÚÒ»¸öÎ»ÖÃÏÔÊ¾£© 
+  86   1      hzkdis("»¶Ó­Ê¹ÓÃ"); 
+  87   1      
+  88   1      write_com(0x90);//µÚ¶şĞĞ£¨Èç¹ûÊÇµØÖ·ÊÇ£º90H£¬¼´LCDµÄµÚ¶şĞĞµÄµÚÒ»¸öÎ»ÖÃÏÔÊ¾£© 
+  89   1      hzkdis("ÏÃÃÅÖÇ¿Ø¿ª·¢°å"); 
+  90   1      
+  91   1      write_com(0x88);//µÚÈıĞĞ£¨Èç¹ûÊÇµØÖ·ÊÇ£º88H£¬¼´LCDµÄµÚ¶şĞĞµÄµÚÒ»¸öÎ»ÖÃÏÔÊ¾£© 
+  92   1      hzkdis("TEL15980845601"); 
+  93   1      
+  94   1      write_com(0x98);//µÚËÄĞĞ£¨Èç¹ûÊÇµØÖ·ÊÇ£º98H£¬¼´LCDµÄµÚ¶şĞĞµÄµÚÒ»¸öÎ»ÖÃÏÔÊ¾£© 
+  95   1      hzkdis("²âÊÔ³ÌĞò"); 
+  96   1      
+  97   1      
+  98   1      } 
+  99          /*------------------ÏÔÊ¾Í¼Æ¬------------------------*/ 
+ 100          void Disp_Img(unsigned char code *img) 
+ 101          {  unsigned int j=0; 
+ 102   1         unsigned char x,y,i; 
+ 103   1             for(i=0;i<9;i+=8) 
+ 104   1             for(y=0;y<32;y++)
+ 105   1               for(x=0;x<8;x++) 
+ 106   1               {  write_com(0x36);//¹¦ÄÜÉèÖÃ---8BIT¿ØÖÆ½çÃæ£¬À©³äÖ¸Áî¼¯ 
+ 107   2                  write_com(y+0x80);        //ĞĞµØÖ· 
+ 108   2                  write_com(x+0x80+i);     //ÁĞµØÖ· 
+ 109   2                  write_com(0x30); 
+ 110   2                  write_data(img[j++]); 
+ 111   2                  write_data(img[j++]); 
+ 112   2               }   
+ 113   1                 
+ 114   1      } 
+ 115          /*------------------ÇåÕû¸öGDRAM¿Õ¼ä---------------*/ 
+C51 COMPILER V9.57.0.0   LCD12864                                                          03/13/2020 13:29:27 PAGE 3   
+
+ 116          void clrgdram() 
+ 117          { unsigned char x,y; 
+ 118   1              for(y=0;y<64;y++) 
+ 119   1               for(x=0;x<16;x++) 
+ 120   1               {  write_com(0x34); 
+ 121   2                  write_com(y+0x80);        //ĞĞµØÖ· 
+ 122   2                  write_com(x+0x80);     //ÁĞµØÖ· 
+ 123   2                  write_com(0x30); 
+ 124   2                  write_data(0x00); 
+ 125   2                  write_data(0x00); 
+ 126   2                                     } 
+ 127   1         } 
+ 128          /*------------------ÕûÆÁĞ´ÈëÊı¾İ:È«ÁÁ£¬»òÕßÊúÌõ---------*/ 
+ 129          void lcdfill(unsigned char disdata) 
+ 130          { unsigned char x,y; 
+ 131   1              for(y=0;y<32;y++) 
+ 132   1               for(x=0;x<16;x++) 
+ 133   1               {  write_com(0x36); 
+ 134   2                  write_com(y+0x80);        //ĞĞµØÖ· 
+ 135   2                  write_com(x+0x80);     //ÁĞµØÖ· 
+ 136   2                  write_com(0x30); 
+ 137   2                  write_data(disdata); 
+ 138   2                  write_data(disdata); 
+ 139   2                  } 
+ 140   1         write_com(0x34);                             
+ 141   1         write_com(0x36); 
+ 142   1         } 
+ 143          /*------------------ÏÔÊ¾ºá-----------------------------*/ 
+ 144          void Disp_H_Line() 
+ 145          {  unsigned char x,y; 
+ 146   1         unsigned char k=0x00;   
+ 147   1             for(y=0;y<32;y++) 
+ 148   1               { k=~k; 
+ 149   2                 for(x=0;x<16;x++) 
+ 150   2               {  write_com(0x36); 
+ 151   3                  write_com(y+0x80);      //ĞĞµØÖ· 
+ 152   3                  write_com(x+0x80);     //ÁĞµØÖ· 
+ 153   3                  write_com(0x30); 
+ 154   3                  write_data(k); 
+ 155   3                  write_data(k); 
+ 156   3                 }; 
+ 157   2               } 
+ 158   1           write_com(0x34);                           
+ 159   1         write_com(0x36); 
+ 160   1      } 
+ 161          /*------------------ÏÔÊ¾±ß¿ò-------------------------------*/ 
+ 162          void Frame() 
+ 163          {unsigned char x,y; 
+ 164   1                lcdfill(0x00); 
+ 165   1              for(x=0;x<9;x+=8) 
+ 166   1                for(y=0;y<32;y++) 
+ 167   1                 { write_com(0x36); 
+ 168   2                  write_com(y+0x80);      //ĞĞµØÖ· 
+ 169   2                  write_com(x+0x80);        //ÁĞµØÖ· 
+ 170   2                  write_com(0x30); 
+ 171   2                  write_data(0x80); 
+ 172   2                  write_data(0x00); 
+ 173   2                 
+ 174   2                  write_com(0x36); 
+ 175   2                  write_com(y+0x80);      //ĞĞµØÖ· 
+ 176   2                  write_com(x+0x87);        //ÁĞµØÖ· 
+ 177   2                  write_com(0x30); 
+C51 COMPILER V9.57.0.0   LCD12864                                                          03/13/2020 13:29:27 PAGE 4   
+
+ 178   2                  write_data(0x00); 
+ 179   2                  write_data(0x01); 
+ 180   2                   
+ 181   2                  } 
+ 182   1            for(y=0;y<2;y++) 
+ 183   1               for(x=0;x<8;x++) 
+ 184   1                 {write_com(0x36); 
+ 185   2                  write_com(y*31+0x80);      //ĞĞµØÖ· 
+ 186   2                  write_com(x+0x80+8*y);        //ÁĞµØÖ· 
+ 187   2                  write_com(0x30); 
+ 188   2                  write_data(0xff); 
+ 189   2                  write_data(0xff); 
+ 190   2                 } 
+ 191   1               write_com(0x34); 
+ 192   1               write_com(0x36); 
+ 193   1                          } 
+ 194          
+ 195          /*------------------ÔÚµÚ7ÁĞµÄÎ»ÖÃ¼ÓÈëÁ½ÌõÊúÏß-------*/ 
+ 196          void shuxian() 
+ 197          { unsigned char x,y; 
+ 198   1           
+ 199   1          for(x=0;x<9;x+=8) 
+ 200   1             for(y=0;y<32;y++) 
+ 201   1                { write_com(0x36); 
+ 202   2                  write_com(y+0x80);    //ĞĞµØÖ· 
+ 203   2                  write_com(x+0x86);     //ÁĞµØÖ· 
+ 204   2                  write_com(0x30); 
+ 205   2                  write_data(0x00); 
+ 206   2                  write_data(0x14); 
+ 207   2                }; 
+ 208   1      }     
+ 209                     
+ 210          /*------------------ÇåÆÁÃüÁî--------------*/   
+ 211          void clrscreen() 
+ 212          { 
+ 213   1         write_com(0x01); 
+ 214   1         delay(10); 
+ 215   1         } 
+ 216             
+ 217          /*------------------ÌÆÊ«¡¶¾²Ò¹Ë¼¡·---------------*/ 
+ 218          void gushi_display() 
+ 219          {  write_com(0x30); 
+ 220   1         clrscreen();   
+ 221   1         write_com(0x80+FIRST_ADDR); 
+ 222   1         hzkdis("°×ÈÕÒÀÉ½¾¡£¬"); 
+ 223   1         write_com(0x90+FIRST_ADDR); 
+ 224   1         hzkdis("»ÆºÓÈëº£Á÷¡£"); 
+ 225   1         write_com(0x88+FIRST_ADDR); 
+ 226   1         hzkdis("ÓûÇîÇ§ÀïÄ¿£¬"); 
+ 227   1         write_com(0x98+FIRST_ADDR); 
+ 228   1         hzkdis("¸üÉÏÒ»²ãÂ¥¡£"); 
+ 229   1         write_com(0xb3+FIRST_ADDR); 
+ 230   1         hzkdis("µÇğÙÈ¸Â¥"); 
+ 231   1         write_com(0xaa+FIRST_ADDR); 
+ 232   1         hzkdis("( ÌÆ )ÍõÖ®»À"); 
+ 233   1      } 
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    978    ----
+   CONSTANT SIZE    =    122    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.57.0.0   LCD12864                                                          03/13/2020 13:29:27 PAGE 5   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      23
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -12,6 +12,6 @@ void LcdWriteCom(uchar com);
 /*LCD1602写入8位数据子函数*/	
 void LcdWriteData(uchar dat)	;
 /*LCD1602初始化子程序*/		
-void Lcd1602_Init();						  
+//void Lcd1602_Init();						  
 
 #endif
