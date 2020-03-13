@@ -1,4 +1,4 @@
-C51 COMPILER V9.57.0.0   NRF2401                                                           02/27/2020 23:59:16 PAGE 1   
+C51 COMPILER V9.57.0.0   NRF2401                                                           03/12/2020 20:51:00 PAGE 1   
 
 
 C51 COMPILER V9.57.0.0, COMPILATION OF MODULE NRF2401
@@ -62,7 +62,7 @@ line level    source
   51          #define CD              0x09  // 地址检测            
   52          #define RX_ADDR_P0      0x0A  // 频道0接收数据地址
   53          #define RX_ADDR_P1      0x0B  // 频道1接收数据地址
-C51 COMPILER V9.57.0.0   NRF2401                                                           02/27/2020 23:59:16 PAGE 2   
+C51 COMPILER V9.57.0.0   NRF2401                                                           03/12/2020 20:51:00 PAGE 2   
 
   54          #define RX_ADDR_P2      0x0C  // 频道2接收数据地址
   55          #define RX_ADDR_P3      0x0D  // 频道3接收数据地址
@@ -126,7 +126,7 @@ line level    source
  113          /*                  pBuf：为待写入数据地址，
  114          /*                  uchars：写入数据的个数
  115          /*****************************************************************/
-C51 COMPILER V9.57.0.0   NRF2401                                                           02/27/2020 23:59:16 PAGE 3   
+C51 COMPILER V9.57.0.0   NRF2401                                                           03/12/2020 20:51:00 PAGE 3   
 
  116          uchar SPI_Write_Buf(uchar reg, uchar *pBuf, uchar uchars)
  117          {
@@ -190,7 +190,7 @@ line level    source
  175          
  176          
  177          
-C51 COMPILER V9.57.0.0   NRF2401                                                           02/27/2020 23:59:16 PAGE 4   
+C51 COMPILER V9.57.0.0   NRF2401                                                           03/12/2020 20:51:00 PAGE 4   
 
  178          int KEYDOWN1()
  179          {

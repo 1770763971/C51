@@ -1,4 +1,4 @@
-C51 COMPILER V9.57.0.0   INFRARED                                                          02/27/2020 23:59:16 PAGE 1   
+C51 COMPILER V9.57.0.0   INFRARED                                                          03/12/2020 20:51:00 PAGE 1   
 
 
 C51 COMPILER V9.57.0.0, COMPILATION OF MODULE INFRARED
@@ -62,7 +62,7 @@ line level    source
   51          
   52          
   53          /*******************************************************************************
-C51 COMPILER V9.57.0.0   INFRARED                                                          02/27/2020 23:59:16 PAGE 2   
+C51 COMPILER V9.57.0.0   INFRARED                                                          03/12/2020 20:51:00 PAGE 2   
 
   54          * 函 数 名       : main
   55          * 函数功能               : 主函数
@@ -126,7 +126,7 @@ line level    source
  113   6                                              }
  114   5                                              err=500;
  115   5                                              while((IRIN==1)&&(err>0))        //计算高电平的时间长度。
-C51 COMPILER V9.57.0.0   INFRARED                                                          02/27/2020 23:59:16 PAGE 3   
+C51 COMPILER V9.57.0.0   INFRARED                                                          03/12/2020 20:51:00 PAGE 3   
 
  116   5                                              {
  117   6                                                      delay(10);       //0.1ms

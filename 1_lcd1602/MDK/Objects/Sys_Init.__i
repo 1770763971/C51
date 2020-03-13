@@ -1,0 +1,1 @@
+"..\..\Libraries\Common\Sys_Init.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\Sys_Init.lst) OBJECT(.\Objects\Sys_Init.obj)

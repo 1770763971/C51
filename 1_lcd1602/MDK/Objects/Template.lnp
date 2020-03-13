@@ -4,7 +4,6 @@
 ".\Objects\key.obj",
 ".\Objects\picture.obj",
 ".\Objects\show.obj",
-".\Objects\Sys_Init.obj",
 ".\Objects\variable.obj",
 ".\Objects\ds1302.obj",
 ".\Objects\i2c.obj",

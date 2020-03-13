@@ -10,7 +10,7 @@
 
 
 void ReadIr();
-void 	IrInit_1();
+void IrInit_1();
 void IrInit();
 void DigDisplay_1();
 	

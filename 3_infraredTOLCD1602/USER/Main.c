@@ -1,3 +1,4 @@
+
 /*********************************************************************************
  * @File:     Main.c
  * @Author:   Mo
@@ -43,7 +44,6 @@ uchar code table[] = {
 uchar code table1[] = { 0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07 };  //自定义字符数据地址
 uchar code table2[] = "QQ:598852247";
 
-
 void Sys_init_all()
 {
 	Lcd1602_Init();
@@ -54,33 +54,50 @@ void Sys_init_all()
 //	Timer1Init();
 }
 
-void main(void)
+extern unsigned char code CDIS1[13]={" Red Control "};
+extern unsigned char code CDIS2[13]={" IR-CODE:--H "};
+extern unsigned char IrValue[6];
+extern unsigned char Time;
+void IrInit();
+void DelayMs(unsigned int );
+extern void main()
 {
-    u8 i;
-	Sys_init_all(); //All initialization function
-//	Int0Init();  //	Set external intertupt 0
-
-    while (1)
-    {
-        LcdWriteCom(0x40);    //开始写入你要显示的自定义字符、汉字代码
-        for (i = 0;i < 64;i++)
-        {
-            LcdWriteData(table[i]);
-            delay(5);
-        }
-        LcdWriteCom(0x80);    //从第一行第一列开始显示
-        for (i = 0;i < 8;i++)     //显示自定义字符
-        {
-            LcdWriteData(table1[i]);
-            delay(5);
-        }
-        LcdWriteCom(0xc0);   //显示QQ：598852247
-        for (i = 0;i < 12;i++)
-        {
-            LcdWriteData(table2[i]);
-            delay(5);
-        }
-    }
-
-}
-
+	unsigned char i;
+	IrInit();	
+	Lcd1602_Init();
+	LcdWriteCom(0x80);
+	for(i=0;i<13;i++)
+	{
+		LcdWriteData(CDIS1[i]);	
+	}
+	LcdWriteCom(0x80+0x40);
+	for(i=0;i<13;i++)
+	{
+		LcdWriteData(CDIS2[i]);	
+	}
+	while(1)
+	{
+		IrValue[4]=IrValue[2]>>4;	 	 	//高位
+		IrValue[5]=IrValue[2]&0x0f;		//低位	
+		if(IrValue[4]>9)
+		{
+			LcdWriteCom(0xc0+0x09);			//设置显示位置
+			LcdWriteData(0x37+IrValue[4]);	//将数值转换为该显示的ASCII码
+		}
+		else
+		{
+			LcdWriteCom(0xc0+0x09);
+			LcdWriteData(IrValue[4]+0x30);	//将数值转换为该显示的ASCII码
+		}	
+		if(IrValue[5]>9)
+		{
+			LcdWriteCom(0xc0+0x0a);
+			LcdWriteData(IrValue[5]+0x37);		//将数值转换为该显示的ASCII码
+		}
+		else
+		{
+			LcdWriteCom(0xc0+0x0a);
+			LcdWriteData(IrValue[5]+0x30);		//将数值转换为该显示的ASCII码
+		}	
+	}
+}				
