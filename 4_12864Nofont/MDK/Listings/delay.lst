@@ -1,0 +1,128 @@
+C51 COMPILER V9.57.0.0   DELAY                                                             03/13/2020 20:02:04 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Objects\delay.obj
+COMPILER INVOKED BY: C:\Program\Keil_v5\C51\BIN\C51.EXE ..\..\Libraries\Common\delay.c OMF2 OPTIMIZE(8,SPEED) BROWSE INC
+                    -DIR(..\..\Libraries\Common;..\..\Libraries\Libraries;..\CODE;..\USER) DEBUG PRINT(.\Listings\delay.lst) OBJECT(.\Objects
+                    -\delay.obj)
+
+line level    source
+
+   1          /*********************************************************************************
+   2           * @File:     delay.c
+   3           * @Author:   Mo
+   4           * @Date         : 2020.02.21
+   5           * @Describe: delay function
+   6          **********************************************************************************/  
+   7          
+   8          #include "common.h"
+   9          #include "delay.h"
+  10          
+  11          
+  12          /*******************************************************************************
+  13          //  @brief      Singlechip delay function with 11.0592MHZ
+  14          //  @param      freq        time
+  15          //  @return     void
+  16          //  @since      v1.0
+  17          //  @SampleUsage: using this function in header file
+  18          *******************************************************************************/
+  19          void delay_ms_110592MHZ(unsigned int time)
+  20          {
+  21   1              uint i = 0,j = 0;
+  22   1              for (i= time;i<0;i--)
+  23   1              for (j=144;j<0;j--);
+  24   1      }
+  25          
+  26          
+  27          /*******************************************************************************
+  28          //  @brief      Singlechip delay function with 12MHZ
+  29          //  @param      time                
+  30          //  @return     void
+  31          //  @since      v1.0
+  32          //  @SampleUsage: Using this function in header file
+  33          *******************************************************************************/
+  34          void delay_ms_12MHZ(uint time)
+  35          {
+  36   1              int i =0,j = 0;
+  37   1              for (i =0;i<time;i++)
+  38   1              for (j =0;j<123;j++);
+  39   1      }
+  40          
+  41          
+  42          /*******************************************************************************
+  43          
+  44          //  @brief      Singlechip delay function with 24MHZ
+  45          //  @param      time
+  46          //  @return     void
+  47          //  @since      v1.0
+  48          //  @SampleUsage: Using this function in header file
+  49          *******************************************************************************/
+  50          void delay_ms_24MHZ(uint time)
+  51          {
+  52   1          unsigned int i=0;  
+  53   1          char j=0;  
+C51 COMPILER V9.57.0.0   DELAY                                                             03/13/2020 20:02:04 PAGE 2   
+
+  54   1          for(i=0;i<100*time;i++)  
+  55   1              for(j=0;j<2;j++);  
+  56   1      }
+  57          
+  58          
+  59          
+  60          
+  61          
+  62          
+  63          
+  64          
+  65          
+  66          
+  67          
+  68          
+  69          
+  70          void delayms(unsigned int n)            //延时10×n毫秒程序
+  71          {
+  72   1              unsigned int i,j;
+  73   1              for(i=0;i<n;i++)
+  74   1              for(j=0;j<2000;j++);
+  75   1      }
+  76          
+  77          
+  78          
+  79          /*******************************************************************************
+  80          * 函 数 名         : delay
+  81          * 函数功能                 : 用于按键消抖 延时函数，i=1时，大约延时10us   一般是1000
+  82          *******************************************************************************/
+  83          void delay_key(u16 i)
+  84          {
+  85   1              while(i--);     
+  86   1      }       
+  87          
+  88          /*******************************************************************************
+  89          * 函 数 名         : delay
+  90          * 函数功能                 : 延时函数，i=1时，大约延时10us
+  91          *******************************************************************************/
+  92          
+  93          
+  94          void delay(u16 i)
+  95          {
+  96   1              while(i--);     
+  97   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    160    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
